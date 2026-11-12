@@ -1,0 +1,6 @@
+# Vim temporary and generated files
+*.swp
+*.swo
+*.swn
+*~
+*.un~
