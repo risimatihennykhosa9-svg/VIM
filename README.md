@@ -1,52 +1,71 @@
-# VIM Starter Pro
+# VIM Developer Starter
 
-This repository contains a more advanced Vim starter configuration designed for a smoother editing experience out of the box.
+This repository contains a more complete Vim setup for software development, with productivity tools for code browsing, navigation, git integration, and Python support.
 
 ## Included
 
-- `.vimrc` with useful defaults and plugin setup
-- `vim-plug` plugin manager integration
-- `NERDTree` for file browsing
-- `fzf` for quick file search
-- `vim-airline` for a cleaner status line
-- `dracula` theme
-- helpful key mappings for faster workflow
+- modern defaults for editing and search
+- custom leader-key shortcuts
+- NERDTree file explorer
+- fzf fuzzy search
+- git status integration
+- airline status bar
+- gruvbox theme
+- Coc.nvim with Python support via `coc-pyright`
 
-## Install
+## Quick start
 
 1. Install Vim.
-2. Install `git` if it is not already available.
-3. Open Vim and run:
+2. Install `git`.
+3. Install `node` and `npm` if you want the Coc language server support.
+4. Open Vim and run:
 
 ```vim
 :PlugInstall
+:CocInstall coc-pyright
 ```
 
-4. Restart Vim.
+5. Restart Vim.
 
-## Quick commands
+## Useful commands
 
-- `<leader>n` — toggle file explorer
-- `<leader>f` — fuzzy-find files
+- `<leader>n` — toggle NERDTree
+- `<leader>f` — open file search
 - `<leader>g` — search git-tracked files
 - `<leader>w` — save
 - `<leader>q` — quit
-- `<leader>h` — clear search highlights
+- `<leader>h` — clear search highlight
+- `gd` — jump to definition
+- `gr` — find references
+- `K` — show documentation preview
 
-## Launching with this config
-
-From the repo root:
+## Run from repository root
 
 ```sh
 vim -u "$PWD/.vimrc"
 ```
 
-To make it your global Vim config, copy it into your home directory:
+## Install the plugin manager
+
+If Vim-plug is not already installed, run:
 
 ```sh
-cp .vimrc "$HOME/.vimrc"
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
+## Optional: install global Python support
+
+```sh
+npm install -g yarn
+```
+
+Then inside Vim:
+
+```vim
+:CocInstall coc-pyright
 ```
 
 ## Customize
 
-Edit `.vimrc` to add more plugins or adjust options. Once you're happy with the setup, you can expand it with language-specific tooling like LSP plugins, linters, and autocompletion.
+Edit `.vimrc` and add language-specific settings, LSP support, or additional plugins. This is a good base for Python, JavaScript, YAML, and general coding workflows.

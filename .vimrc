@@ -1,5 +1,5 @@
-" Advanced Vim starter configuration.
-" Includes a plugin manager, file explorer, statusline, theme, and useful shortcuts.
+" Developer-focused Vim starter configuration.
+" Built for faster navigation, editing, and Python workflows.
 
 set nocompatible
 set encoding=utf-8
@@ -15,8 +15,10 @@ set cursorline
 set scrolloff=8
 set signcolumn=yes
 set colorcolumn=100
+set nowrap
+set laststatus=2
 
-" Tabs / indentation
+" Tabs and indentation
 set expandtab
 set tabstop=4
 set shiftwidth=4
@@ -25,13 +27,13 @@ set autoindent
 set smartindent
 set backspace=indent,eol,start
 
-" Search
+" Search behavior
 set ignorecase
 set smartcase
 set incsearch
 set hlsearch
 
-" Files, backups, undo
+" File handling
 set swapfile
 set backup
 set undofile
@@ -50,34 +52,53 @@ endif
 " Leader key
 let mapleader = " "
 
-" Plugins
+" -------- Plugin manager --------
 call plug#begin('~/.vim/plugged')
-  Plug 'scrooloose/nerdtree'
+  " UI / theme
+  Plug 'morhetz/gruvbox'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
-  Plug 'dracula/vim', {'as': 'dracula'}
-  Plug 'tpope/vim-fugitive'
-  Plug 'tpope/vim-surround'
+
+  " Navigation / search
+  Plug 'scrooloose/nerdtree'
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
+
+  " Editing / productivity
+  Plug 'tpope/vim-fugitive'
+  Plug 'tpope/vim-surround'
+  Plug 'airblade/vim-gitgutter'
+  Plug 'preservim/nerdcommenter'
+  Plug 'jiangmiao/auto-pairs'
+
+  " Language support
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+  Plug 'sheerun/vim-polyglot'
+
+  " Optional syntax improvements
+  Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 call plug#end()
 
-" Theme and airline
-colorscheme dracula
-let g:airline_theme = 'dracula'
+" -------- Theme --------
+colorscheme gruvbox
+let g:airline_theme = 'gruvbox'
 let g:airline_powerline_fonts = 1
 let g:airline#extensions#tabline#enabled = 1
 
-" NERDTree
+" -------- File explorer --------
+let NERDTreeShowHidden = 1
+let NERDTreeMinimalUI = 1
+let NERDTreeQuitOnOpen = 1
 nnoremap <leader>n :NERDTreeToggle<CR>
-let NERDTreeShowHidden=1
-let NERDTreeQuitOnOpen=1
 
-" FZF
+" -------- Fuzzy finder --------
 nnoremap <leader>f :Files<CR>
-nnoremap <leader>g :GFiles<CR>
+noremap <leader>g :GFiles<CR>
 
-" General shortcuts
+" -------- Git --------
+nnoremap <leader>t :Git status<CR>
+
+" -------- Search / shortcuts --------
 nnoremap <leader>w :write<CR>
 nnoremap <leader>q :quit<CR>
 nnoremap <leader>h :nohlsearch<CR>
@@ -86,11 +107,44 @@ nnoremap <leader>h :nohlsearch<CR>
 nnoremap j gj
 nnoremap k gk
 
-" Auto open NERDTree when Vim starts without a file
+" -------- Comments --------
+let g:NERDDefaultAlign = 'left'
+let g:NERDSpaceDelims = 1
+
+" -------- Coc.nvim --------
+let g:coc_global_extensions = ['coc-pyright', 'coc-json', 'coc-yaml']
+
+" Use Tab to navigate completion menu.
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :\n      \ <SID>check_back_space() ? "\<TAB>" : coc#refresh()
+      \n
+inoremap <expr><S-TAB> coc#pum#visible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1] =~# '\s'
+endfunction
+
+" Go to definition / references
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation() abort
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h ' . expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . ' ' . expand('<cword>')
+  endif
+endfunction
+
+" Auto open NERDTree when opening Vim without arguments
 autocmd VimEnter * if !argc() | NERDTree | endif
 
-" Auto close NERDTree when the only buffer left is NERDTree
+" Automatically close NERDTree when it is the last window
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
-
-" Show linenumbers in Explorer
-let NERDTreeMinimalUI = 1
