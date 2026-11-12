@@ -1,5 +1,5 @@
-" Developer-focused Vim starter configuration.
-" Built for faster navigation, editing, and Python workflows.
+" Web development Vim starter configuration.
+" Optimized for HTML, CSS, JavaScript, TypeScript, and modern front-end work.
 
 set nocompatible
 set encoding=utf-8
@@ -18,22 +18,22 @@ set colorcolumn=100
 set nowrap
 set laststatus=2
 
-" Tabs and indentation
+" Tabs / indentation
 set expandtab
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
+set tabstop=2
+set shiftwidth=2
+set softtabstop=2
 set autoindent
 set smartindent
 set backspace=indent,eol,start
 
-" Search behavior
+" Search
 set ignorecase
 set smartcase
 set incsearch
 set hlsearch
 
-" File handling
+" Files and undo
 set swapfile
 set backup
 set undofile
@@ -55,7 +55,7 @@ let mapleader = " "
 " -------- Plugin manager --------
 call plug#begin('~/.vim/plugged')
   " UI / theme
-  Plug 'morhetz/gruvbox'
+  Plug 'gruvbox-community/gruvbox'
   Plug 'vim-airline/vim-airline'
   Plug 'vim-airline/vim-airline-themes'
 
@@ -70,13 +70,19 @@ call plug#begin('~/.vim/plugged')
   Plug 'airblade/vim-gitgutter'
   Plug 'preservim/nerdcommenter'
   Plug 'jiangmiao/auto-pairs'
+  Plug 'editorconfig/editorconfig-vim'
+  Plug 'mattn/emmet-vim'
 
-  " Language support
+  " JavaScript / TypeScript / web syntax
+  Plug 'pangloss/vim-javascript'
+  Plug 'leafgarland/typescript-vim'
+  Plug 'maxmellon/vim-jsx-pretty'
+  Plug 'styled-components/vim-styled-components'
+  Plug 'hail2u/vim-css3-syntax'
+  Plug 'elzr/vim-json'
+
+  " LSP / completion
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'sheerun/vim-polyglot'
-
-  " Optional syntax improvements
-  Plug 'numirias/semshi', {'do': ':UpdateRemotePlugins'}
 call plug#end()
 
 " -------- Theme --------
@@ -93,7 +99,7 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 
 " -------- Fuzzy finder --------
 nnoremap <leader>f :Files<CR>
-noremap <leader>g :GFiles<CR>
+nnoremap <leader>g :GFiles<CR>
 
 " -------- Git --------
 nnoremap <leader>t :Git status<CR>
@@ -111,8 +117,19 @@ nnoremap k gk
 let g:NERDDefaultAlign = 'left'
 let g:NERDSpaceDelims = 1
 
+" -------- Emmet --------
+let g:user_emmet_leader_key = '<C-y>'
+
 " -------- Coc.nvim --------
-let g:coc_global_extensions = ['coc-pyright', 'coc-json', 'coc-yaml']
+let g:coc_global_extensions = [
+  \ 'coc-html',
+  \ 'coc-css',
+  \ 'coc-json',
+  \ 'coc-yaml',
+  \ 'coc-tsserver',
+  \ 'coc-eslint',
+  \ 'coc-prettier'
+\ ]
 
 " Use Tab to navigate completion menu.
 inoremap <silent><expr> <TAB>
@@ -131,7 +148,7 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Show documentation in preview window
+" Show documentation preview
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 function! s:show_documentation() abort
   if (index(['vim','help'], &filetype) >= 0)
@@ -143,8 +160,14 @@ function! s:show_documentation() abort
   endif
 endfunction
 
-" Auto open NERDTree when opening Vim without arguments
+" Auto open NERDTree when starting without files
 autocmd VimEnter * if !argc() | NERDTree | endif
 
-" Automatically close NERDTree when it is the last window
+" Auto close NERDTree if it's the last window
 autocmd BufEnter * if tabpagenr('$') == 1 && winnr('$') == 1 && exists('b:NERDTree') && b:NERDTree.isTabTree() | quit | endif
+
+" Format on save when possible
+augroup FormatOnSave
+  autocmd!
+  autocmd BufWritePre *.js,*.jsx,*.ts,*.tsx,*.json,*.css,*.scss,*.html,*.vue call CocAction('format')
+augroup END
