@@ -1,29 +1,52 @@
-# VIM Starter
+# VIM Starter Pro
 
-A small, dependency-free starter configuration for Vim. It provides sensible editing defaults and a few practical key mappings without requiring a plugin manager.
+This repository contains a more advanced Vim starter configuration designed for a smoother editing experience out of the box.
 
-## Files
+## Included
 
-- `.vimrc` — Vim configuration.
-- `.gitignore` — excludes common Vim swap, backup, and undo files.
+- `.vimrc` with useful defaults and plugin setup
+- `vim-plug` plugin manager integration
+- `NERDTree` for file browsing
+- `fzf` for quick file search
+- `vim-airline` for a cleaner status line
+- `dracula` theme
+- helpful key mappings for faster workflow
 
-## Try it
+## Install
 
-From the repository root, start Vim with this config:
+1. Install Vim.
+2. Install `git` if it is not already available.
+3. Open Vim and run:
+
+```vim
+:PlugInstall
+```
+
+4. Restart Vim.
+
+## Quick commands
+
+- `<leader>n` — toggle file explorer
+- `<leader>f` — fuzzy-find files
+- `<leader>g` — search git-tracked files
+- `<leader>w` — save
+- `<leader>q` — quit
+- `<leader>h` — clear search highlights
+
+## Launching with this config
+
+From the repo root:
 
 ```sh
 vim -u "$PWD/.vimrc"
 ```
 
-To install it as your user configuration, back up your existing file and copy this one:
+To make it your global Vim config, copy it into your home directory:
 
 ```sh
-[ -f "$HOME/.vimrc" ] && cp "$HOME/.vimrc" "$HOME/.vimrc.backup"
 cp .vimrc "$HOME/.vimrc"
 ```
 
-Open Vim and run `:help` to learn more. Use `:Tutor` for Vim's interactive tutorial.
-
 ## Customize
 
-Edit `.vimrc` to change options or mappings. The leader key is Space; for example, `<leader>w` saves the current file. Add plugin-manager setup only if and when you want plugins.
+Edit `.vimrc` to add more plugins or adjust options. Once you're happy with the setup, you can expand it with language-specific tooling like LSP plugins, linters, and autocompletion.
